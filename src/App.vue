@@ -1,10 +1,12 @@
 <template>
   <h1>Vue Reaction Timer</h1>
-  <button @click="start">Play</button>
-  <Block v-if="isPlaying" :delay="delay"></Block>
+  <button @click="start" :disabled="isPlaying">Play</button>
+  <Block v-if="isPlaying" :delay="delay" @end="endGame"></Block>
+  <p v-if="showResults">Reaction Time: {{ score }} ms</p>
 </template>
 
 <script>
+import { reactive } from "vue";
 import Block from "./components/Block.vue";
 export default {
   name: "App",
@@ -13,13 +15,20 @@ export default {
     return {
       isPlaying: false,
       delay: null,
+      score: null,
+      showResults: false,
     };
   },
   methods: {
     start() {
       this.delay = 2000 + Math.random() * 5000;
       this.isPlaying = true;
-      console.log(this.delay);
+      this.showResults = false;
+    },
+    endGame(reactionTime) {
+      this.score = reactionTime;
+      this.isPlaying = false;
+      this.showResults = true;
     },
   },
 };
